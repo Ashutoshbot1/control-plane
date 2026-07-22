@@ -2,14 +2,14 @@
 
 ## Status
 
-Conceptual draft. No migration should be written until role capabilities and permission inheritance rules are reviewed.
+Conceptual draft. No migration should be written until the MVP database relationships are reviewed against the accepted role and product-access rules.
 
 ## Design Goals
 
 - Keep authentication data separate from public user responses.
 - Preserve referential integrity with explicit foreign keys.
 - Enforce important uniqueness and nullability rules in PostgreSQL.
-- Scope permission records to a clear product/resource hierarchy.
+- Keep MVP access records at the product/root level.
 - Preserve historical audit references when accounts are deactivated.
 - Support transactional access updates.
 - Add indexes from actual query patterns rather than guesswork.
@@ -21,7 +21,6 @@ users
   ├── refresh_tokens
   ├── invitations (as inviter or accepted user)
   ├── user_product_access
-  │     └── user_resource_permissions
   └── audit_logs (as actor or target)
 
 products
@@ -156,7 +155,7 @@ UNIQUE(resource_id, key)
 
 ### `user_product_access`
 
-Purpose: declares that a user is assigned to a product and optionally stores a product-level access default.
+Purpose: declares that a user is assigned to a product and stores the MVP root-level access.
 
 Candidate fields:
 
@@ -176,17 +175,12 @@ Candidate uniqueness:
 UNIQUE(user_id, product_id)
 ```
 
-### `user_resource_permissions`
+Important rules:
 
-Purpose: stores explicit resource or sub-resource permission overrides.
-
-Possible designs:
-
-1. Separate resource and sub-resource permission tables.
-2. One polymorphic table with target type and target id.
-3. Store permissions only at leaf capabilities.
-
-No option is accepted yet. The choice depends on inheritance and query requirements. Avoid a polymorphic foreign key that PostgreSQL cannot enforce without a strong reason.
+- `access_level` is one of `NONE`, `VIEW`, or `EDIT`.
+- `NONE` or a missing assignment means the user cannot use the product.
+- Resources and sub-resources remain product structure in the MVP, not separately permissioned targets.
+- Resource-level, sub-resource-level, and `CUSTOM` permission designs are deferred.
 
 ### `audit_logs`
 
@@ -221,7 +215,6 @@ users 1 ─── * invitations as inviter
 users * ─── * products through user_product_access
 products 1 ─── * resources
 resources 1 ─── * sub_resources
-user_product_access 1 ─── * explicit permissions (design pending)
 users 1 ─── * audit_logs as actor
 ```
 
@@ -237,7 +230,7 @@ users 1 ─── * audit_logs as actor
 - Accept invitation and activate/create user
 - Rotate refresh token
 - Change role and write audit event
-- Apply a bulk permission update and write audit events
+- Apply a product-access update and write audit events
 - Revoke all access during offboarding
 - Delete/archive hierarchy records and reconcile assignments
 
@@ -258,8 +251,7 @@ Do not create all of these automatically. Confirm them against query patterns:
 
 - Single organization versus organization table in the MVP
 - Tool-role representation
-- Permission-table shape
-- Parent-to-child permission inheritance
+- Whether to store explicit `NONE` product access rows or treat missing rows as no access
 - Soft-delete strategy
 - Refresh-token selector and reuse-detection design
 - Migration library

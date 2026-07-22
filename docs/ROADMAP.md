@@ -12,10 +12,10 @@ An implementation item is marked complete only after relevant verification passe
 
 - `[x]` Create the project documentation skeleton
 - `[x]` Record mentoring and context-recovery rules
-- `[~]` Initialize the Git repository
+- `[x]` Initialize the Git repository
 - `[~]` Define the product problem and MVP boundary
-- `[ ]` Finalize role capabilities
-- `[ ]` Finalize permission inheritance rules
+- `[x]` Finalize role capabilities
+- `[x]` Finalize MVP permission boundary
 - `[ ]` Select the public product name and neutral branding
 - `[ ]` Copy and sanitize the permitted frontend
 - `[ ]` Verify no internal secrets, endpoints, identifiers, or data remain
@@ -90,7 +90,7 @@ An implementation item is marked complete only after relevant verification passe
 - `[ ]` Prevent grants beyond the actor's authority
 - `[ ]` Apply multi-change updates transactionally
 - `[ ]` Make sensitive mutations idempotent where needed
-- `[ ]` Test allow, deny, inheritance, and escalation cases
+- `[ ]` Test allow, deny, product-access, and escalation cases
 
 ## Phase 7 — Audit Logging
 

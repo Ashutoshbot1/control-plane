@@ -2,11 +2,11 @@
 
 ## Status
 
-This is a working product brief. The overall direction is agreed, while detailed role capabilities and permission inheritance rules still require explicit review before implementation.
+This is a working product brief. The overall direction, initial role capabilities, and MVP permission boundary are accepted.
 
 ## Product Summary
 
-ControlPlane is an Identity and Access Management platform for an organization that operates multiple internal applications. It gives authorized administrators one place to invite users, manage roles, assign application access, configure resource-level permissions, and review security-sensitive activity.
+ControlPlane is an Identity and Access Management platform for an organization that operates multiple internal applications. It gives authorized administrators one place to invite users, manage roles, assign application access, configure product modules, and review security-sensitive activity.
 
 ## Problem
 
@@ -17,9 +17,9 @@ ControlPlane centralizes those decisions:
 ```text
 Organization
   -> internal products/applications
-  -> resources and sub-resources
+  -> products, resources, and sub-resources
   -> users and roles
-  -> explicit access assignments
+  -> explicit root-level access assignments
   -> auditable permission changes
 ```
 
@@ -27,15 +27,21 @@ Organization
 
 ### Super Admin
 
-Expected to control the IAM platform itself, including administrators and the highest-risk configuration. Exact restrictions require review before implementation.
+The single highest-privilege account in ControlPlane. The super admin can do everything in the platform, including assigning the `ADMIN` role, managing products, managing users, managing user access, and viewing audit logs.
+
+There should be only one super admin in the MVP.
 
 ### Admin
 
-Expected to manage normal users, products, and access assignments within limits established by a super admin. An admin must never be able to grant permissions beyond their own authority.
+An administrator for normal operational work. An admin can invite users, manage user access, assign `VIEW` or `EDIT` access, and create, update, or delete products, resources, and sub-resources.
+
+An admin cannot create another admin, assign the `SUPER_ADMIN` role, change their own privilege level, or bypass backend authorization rules.
 
 ### User
 
-Expected to view only assigned products and use only the resources allowed by their effective permissions. A user cannot administer IAM configuration.
+An end user of the managed products. A user can view products available to them and inspect the resources or sub-resources inside each accessible product. For each accessible product, the user can act only according to their assigned access level: `VIEW` or `EDIT`.
+
+Unassigned products should appear disabled or unavailable in the frontend. Resources and sub-resources inside an accessible product inherit the product access level in the MVP. Frontend disabled states are usability rules only; the backend must still enforce authorization for every protected request.
 
 ## Domain Terminology
 
@@ -61,9 +67,9 @@ ADMIN
 USER
 ```
 
-### Resource Access
+### Product Access
 
-An access level assigned within a product hierarchy:
+The MVP assigns access at the product/root level:
 
 ```text
 NONE
@@ -71,7 +77,9 @@ VIEW
 EDIT
 ```
 
-The precise inheritance and conflict-resolution rules are intentionally unresolved until the authorization model is designed.
+`NONE` or a missing assignment means the product is not usable by the user. The frontend may show it as disabled or unavailable, but backend authorization is still required.
+
+Resource-level, sub-resource-level, and `CUSTOM` mixed permissions are deferred until after the core IAM flow is working.
 
 ## MVP Scope
 
@@ -84,7 +92,7 @@ The precise inheritance and conflict-resolution rules are intentionally unresolv
 - Product creation, update, listing, and removal
 - Resource and sub-resource configuration
 - User-to-product assignment
-- Resource-level `NONE`, `VIEW`, and `EDIT` permissions
+- Product-level `NONE`, `VIEW`, and `EDIT` permissions
 - Backend authorization for every protected endpoint
 - Security-sensitive audit logs
 - Validation and consistent error responses
@@ -105,12 +113,16 @@ The precise inheritance and conflict-resolution rules are intentionally unresolv
 - Single sign-on and external identity providers
 - Mobile application
 - Microservices
+- Resource-level custom permissions
+- Sub-resource-level custom permissions
+- `CUSTOM` mixed permission state
 
 ## Non-Goals
 
 - Reproducing a commercial enterprise IAM suite
 - Implementing OAuth or OpenID Connect as an identity provider
 - Supporting every possible permission model
+- Implementing hierarchical permission inheritance in the first release
 - Migrating the entire frontend to TypeScript before backend integration
 - Building infrastructure before core authorization is correct and tested
 
@@ -133,9 +145,5 @@ The finished project should demonstrate that its author can design and deliver a
 
 ## Open Product Questions
 
-- What exact actions distinguish `SUPER_ADMIN` from `ADMIN`?
-- Can an admin create or modify products, or only assign existing access?
-- Can a user hold different access levels at product, resource, and sub-resource levels?
-- Does an explicit child permission override its parent?
 - What happens when a resource is removed while assignments exist?
 - Should deactivated users retain historical audit references?

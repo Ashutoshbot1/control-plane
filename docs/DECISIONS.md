@@ -4,7 +4,7 @@ This log records decisions that materially affect architecture, security, scope,
 
 ## D-001 — Use One Repository For The Full-Stack Product
 
-**Status:** Accepted  
+**Status:** Accepted
 **Date:** 2026-07-22
 
 ### Decision
@@ -25,7 +25,7 @@ A monorepo requires clear package boundaries, but it reduces coordination overhe
 
 ## D-002 — Use Next.js For Frontend And Express For Backend
 
-**Status:** Accepted  
+**Status:** Accepted
 **Date:** 2026-07-22
 
 ### Decision
@@ -46,7 +46,7 @@ The separate API adds CORS, authentication-integration, deployment, and contract
 
 ## D-003 — Start With A Modular Monolith
 
-**Status:** Accepted  
+**Status:** Accepted
 **Date:** 2026-07-22
 
 ### Decision
@@ -69,7 +69,7 @@ Module boundaries require discipline, but they must not become artificial intern
 
 ## D-004 — Reuse The Permitted Frontend Incrementally
 
-**Status:** Accepted  
+**Status:** Accepted
 **Date:** 2026-07-22
 
 ### Decision
@@ -90,7 +90,7 @@ The copied frontend contains existing lint, state-management, and authentication
 
 ## D-005 — Defer Advanced Infrastructure
 
-**Status:** Accepted  
+**Status:** Accepted
 **Date:** 2026-07-22
 
 ### Decision
@@ -117,3 +117,56 @@ The existing frontend assumes one organizational context. Deferring tenancy redu
 ### Trade-off
 
 Tenant isolation will not be demonstrated in the first release.
+
+## D-007 — Use One Super Admin And Operational Admins
+
+**Status:** Accepted
+**Date:** 2026-07-22
+
+### Decision
+
+ControlPlane has exactly one `SUPER_ADMIN` in the MVP. The super admin can perform every platform action, including assigning the `ADMIN` role.
+
+`ADMIN` users handle normal operational management: inviting users, assigning `VIEW` or `EDIT` access, managing user access, and creating, updating, or deleting products, resources, and sub-resources.
+
+`USER` accounts can view available products and use only accessible resources or sub-resources according to their effective `VIEW` or `EDIT` permission.
+
+### Reason
+
+This keeps the MVP authorization model understandable while still demonstrating real backend authorization boundaries and privilege-escalation prevention.
+
+### Security Rules
+
+- Only the super admin can assign or remove the `ADMIN` role.
+- No admin can assign `SUPER_ADMIN`.
+- No admin can change their own privilege level.
+- Frontend disabled states are only user experience. Backend authorization remains mandatory for every protected operation.
+
+### Trade-off
+
+A single super admin simplifies the first release, but later multi-organization support may require organization owners or scoped super-admin equivalents.
+
+## D-008 — Keep MVP Access At The Product Root Level
+
+**Status:** Accepted
+**Date:** 2026-07-22
+
+### Decision
+
+The MVP assigns user access at the product/root level only. A product assignment has one access level: `NONE`, `VIEW`, or `EDIT`.
+
+Resources and sub-resources remain part of the product structure, but they are not separately permissioned in the first release. If a user can access a product, they can inspect its resources and sub-resources according to the product access level.
+
+`CUSTOM` and child-level overrides are deferred until after the core IAM flow works.
+
+### Reason
+
+This matches the existing frontend logic, keeps the first backend permission model clear, and avoids adding hierarchical permission complexity before authentication, product access, and authorization tests exist.
+
+### Alternative Considered
+
+Store permissions independently at product, resource, and sub-resource levels, with `CUSTOM` representing mixed child permissions.
+
+### Trade-off
+
+The MVP is less granular, but it is easier to implement, test, explain, and evolve. Hierarchical permissions can be added later as a versioned expansion of the access model.
