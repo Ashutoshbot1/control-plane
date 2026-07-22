@@ -1,0 +1,189 @@
+# API Contract
+
+## Status
+
+Draft endpoint inventory. Routes and payloads must be finalized only after role capabilities, permission inheritance, and database relationships are agreed.
+
+## Base Convention
+
+```text
+Base path: /api/v1
+Content type: application/json
+Authentication: protected endpoints require an authenticated session/access token
+```
+
+Versioning is included because the frontend and backend are independently deployable clients and services. It is not permission to maintain multiple versions prematurely.
+
+## Response Conventions
+
+Proposed success response:
+
+```json
+{
+  "success": true,
+  "message": "User fetched successfully",
+  "data": {}
+}
+```
+
+Proposed validation/client error:
+
+```json
+{
+  "success": false,
+  "message": "Validation failed",
+  "errors": [
+    {
+      "field": "email",
+      "message": "Invalid email address"
+    }
+  ]
+}
+```
+
+Unexpected server errors must not expose stack traces or internal details.
+
+## Status-Code Principles
+
+- `200` successful reads and normal updates
+- `201` resource created
+- `204` successful operation with no response body when appropriate
+- `400` malformed or invalid input
+- `401` missing, invalid, or expired authentication
+- `403` authenticated but not authorized
+- `404` resource unavailable to the caller
+- `409` uniqueness, version, or state conflict
+- `429` rate limit exceeded
+- `500` unexpected internal failure
+
+For protected resources, returning `404` instead of `403` may be appropriate when revealing existence would leak information.
+
+## Endpoint Inventory
+
+### System
+
+```text
+GET /health
+GET /ready
+```
+
+### Authentication
+
+```text
+POST /api/v1/auth/login
+POST /api/v1/auth/refresh
+POST /api/v1/auth/logout
+POST /api/v1/auth/forgot-password
+POST /api/v1/auth/reset-password
+POST /api/v1/auth/verify-invitation
+```
+
+### Invitations
+
+```text
+POST   /api/v1/invitations
+GET    /api/v1/invitations
+DELETE /api/v1/invitations/:invitationId
+```
+
+### Users
+
+```text
+GET   /api/v1/users
+GET   /api/v1/users/:userId
+PATCH /api/v1/users/:userId
+PATCH /api/v1/users/:userId/status
+PATCH /api/v1/users/:userId/role
+```
+
+### Products
+
+```text
+GET    /api/v1/products
+POST   /api/v1/products
+GET    /api/v1/products/:productId
+PATCH  /api/v1/products/:productId
+DELETE /api/v1/products/:productId
+```
+
+### Resources
+
+```text
+POST   /api/v1/products/:productId/resources
+PATCH  /api/v1/products/:productId/resources/:resourceId
+DELETE /api/v1/products/:productId/resources/:resourceId
+```
+
+### Sub-resources
+
+```text
+POST   /api/v1/resources/:resourceId/sub-resources
+PATCH  /api/v1/resources/:resourceId/sub-resources/:subResourceId
+DELETE /api/v1/resources/:resourceId/sub-resources/:subResourceId
+```
+
+### User Access
+
+```text
+GET    /api/v1/users/:userId/access
+PUT    /api/v1/users/:userId/products/:productId/access
+PATCH  /api/v1/users/:userId/products/:productId/permissions
+DELETE /api/v1/users/:userId/products/:productId/access
+```
+
+The exact mutation shape is unresolved. A transactional bulk permission update is preferable to many fragile single-checkbox network requests, but idempotency and concurrency behavior must be designed first.
+
+### Audit Logs
+
+```text
+GET /api/v1/audit-logs
+GET /api/v1/audit-logs/:auditLogId
+```
+
+## List Query Convention
+
+Where applicable:
+
+```text
+?page=1
+&limit=20
+&search=ashutosh
+&sortBy=created_at
+&order=desc
+```
+
+Example pagination metadata:
+
+```json
+{
+  "items": [],
+  "pagination": {
+    "page": 1,
+    "limit": 20,
+    "totalItems": 0,
+    "totalPages": 0,
+    "hasNextPage": false,
+    "hasPreviousPage": false
+  }
+}
+```
+
+## Security Rules
+
+- Treat every route handler as publicly reachable.
+- Validate params, query, body, and relevant headers.
+- Authenticate before loading sensitive data.
+- Authorize against the target resource and requested action.
+- Never trust a role or permission sent by the frontend.
+- Never accept ownership or actor identity from the request body.
+- Apply rate limits to authentication and invitation flows.
+- Record security-sensitive mutations in audit logs.
+
+## Open Contract Decisions
+
+- Cookie-based versus authorization-header access-token delivery
+- Refresh-token cookie behavior
+- Bulk permission mutation payload and concurrency control
+- Soft deletion versus hard deletion responses
+- Audit-log filtering dimensions
+- Whether product/resource hierarchy creation uses nested or separate routes
