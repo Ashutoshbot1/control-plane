@@ -41,7 +41,7 @@ An admin cannot create another admin, assign the `SUPER_ADMIN` role, change thei
 
 An end user of the managed products. A user can view products available to them and inspect the resources or sub-resources inside each accessible product. For each accessible product, the user can act only according to their assigned access level: `VIEW` or `EDIT`.
 
-Unassigned products should appear disabled or unavailable in the frontend. Resources and sub-resources inside an accessible product inherit the product access level in the MVP. Frontend disabled states are usability rules only; the backend must still enforce authorization for every protected request.
+Normal users see only products assigned to them. Resources and sub-resources inside an accessible product inherit the product access level in the MVP. Admin access-management screens may show all products while editing a user's assignments, but normal user product lists should not include unassigned products. Backend authorization remains mandatory for every protected request.
 
 ## Domain Terminology
 
@@ -72,12 +72,11 @@ USER
 The MVP assigns access at the product/root level:
 
 ```text
-NONE
 VIEW
 EDIT
 ```
 
-`NONE` or a missing assignment means the product is not usable by the user. The frontend may show it as disabled or unavailable, but backend authorization is still required.
+The database stores active grants only: `VIEW` and `EDIT`. A missing assignment means no access. API responses may still use `NONE` as a derived UI state on admin access-management screens.
 
 Resource-level, sub-resource-level, and `CUSTOM` mixed permissions are deferred until after the core IAM flow is working.
 
@@ -92,7 +91,7 @@ Resource-level, sub-resource-level, and `CUSTOM` mixed permissions are deferred 
 - Product creation, update, listing, and removal
 - Resource and sub-resource configuration
 - User-to-product assignment
-- Product-level `NONE`, `VIEW`, and `EDIT` permissions
+- Product-level `VIEW` and `EDIT` permissions
 - Backend authorization for every protected endpoint
 - Security-sensitive audit logs
 - Validation and consistent error responses

@@ -177,8 +177,10 @@ UNIQUE(user_id, product_id)
 
 Important rules:
 
-- `access_level` is one of `NONE`, `VIEW`, or `EDIT`.
-- `NONE` or a missing assignment means the user cannot use the product.
+- `access_level` is one of `VIEW` or `EDIT`.
+- A missing assignment row means the user cannot use the product.
+- Normal user product lists should return only assigned products.
+- Admin access-management screens may derive `NONE` for products without an assignment.
 - Resources and sub-resources remain product structure in the MVP, not separately permissioned targets.
 - Resource-level, sub-resource-level, and `CUSTOM` permission designs are deferred.
 
@@ -251,7 +253,6 @@ Do not create all of these automatically. Confirm them against query patterns:
 
 - Single organization versus organization table in the MVP
 - Tool-role representation
-- Whether to store explicit `NONE` product access rows or treat missing rows as no access
 - Soft-delete strategy
 - Refresh-token selector and reuse-detection design
 - Migration library

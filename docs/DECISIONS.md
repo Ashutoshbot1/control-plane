@@ -153,15 +153,21 @@ A single super admin simplifies the first release, but later multi-organization 
 
 ### Decision
 
-The MVP assigns user access at the product/root level only. A product assignment has one access level: `NONE`, `VIEW`, or `EDIT`.
+The MVP assigns user access at the product/root level only. A product assignment has one stored access level: `VIEW` or `EDIT`.
+
+ControlPlane stores active grants only. A missing `user_product_access` row means the user has no access to that product. API responses may still derive `NONE` for admin access-management screens.
 
 Resources and sub-resources remain part of the product structure, but they are not separately permissioned in the first release. If a user can access a product, they can inspect its resources and sub-resources according to the product access level.
+
+Normal users see only assigned products in the MVP. Unassigned products do not need to be shown as disabled in normal user product lists.
 
 `CUSTOM` and child-level overrides are deferred until after the core IAM flow works.
 
 ### Reason
 
 This matches the existing frontend logic, keeps the first backend permission model clear, and avoids adding hierarchical permission complexity before authentication, product access, and authorization tests exist.
+
+Storing only active grants keeps the database smaller and makes access queries safer: joined rows represent real access, while revocation is represented by deleting the active grant and writing an audit event.
 
 ### Alternative Considered
 

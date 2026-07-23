@@ -16,6 +16,7 @@ Phase 0 — Product and repository foundation.
 - Declared `frontend/` and `backend/` intentionally empty until planning is reviewed.
 - Finalized the initial `SUPER_ADMIN`, `ADMIN`, and `USER` role capabilities.
 - Finalized the MVP permission boundary: product/root-level access only.
+- Accepted active-grants-only storage: no `user_product_access` row means no access.
 
 ## In Progress
 
@@ -32,7 +33,6 @@ None.
 ## Important Open Decisions
 
 - Whether the MVP is strictly single-organization
-- Whether to store explicit `NONE` product access rows or treat missing rows as no access
 - Browser token/session storage strategy
 - Migration tool choice
 
