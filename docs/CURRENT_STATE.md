@@ -22,6 +22,7 @@ Phase 0 — Product and repository foundation.
 - Accepted refresh-token storage: selector plus hashed secret for efficient lookup and safe rotation.
 - Accepted product setup rule: product creation includes at least one resource in the same transaction.
 - Accepted sub-resource rule: sub-resources are optional; standalone resources can receive access directly.
+- Accepted deletion behavior: archive products, resources, and sub-resources instead of hard-deleting.
 
 ## In Progress
 
@@ -29,7 +30,7 @@ Phase 0 — Product and repository foundation.
 
 ## Next Task
 
-Continue reviewing the database model table by table. Next focus: deletion behavior for products, resources, and sub-resources.
+Continue reviewing the database model table by table. Next focus: audit-log actor/target retention.
 
 ## Known Blockers
 

@@ -124,6 +124,8 @@ slug
 description
 launch_url
 status
+archived_at
+archived_by_user_id
 created_by_user_id
 created_at
 updated_at
@@ -134,6 +136,7 @@ Important rules:
 - A product must be created with at least one resource in the MVP.
 - Product creation should be transactional: create the product and its first resource together, or create neither.
 - A product can have many resources after creation.
+- Products are archived instead of hard-deleted.
 
 ### `resources`
 
@@ -147,6 +150,9 @@ product_id
 name
 key
 description
+status
+archived_at
+archived_by_user_id
 created_at
 updated_at
 ```
@@ -162,6 +168,7 @@ Important rules:
 - Each resource belongs to exactly one product.
 - A resource key must be unique within its product.
 - Resource creation after product setup is allowed.
+- Resources are archived instead of hard-deleted.
 
 ### `sub_resources`
 
@@ -175,6 +182,9 @@ resource_id
 name
 key
 description
+status
+archived_at
+archived_by_user_id
 created_at
 updated_at
 ```
@@ -191,6 +201,7 @@ Important rules:
 - A resource can exist and be useful without sub-resources.
 - If a resource has sub-resources, access is assigned on the sub-resources.
 - If a resource has no sub-resources, access is assigned directly on the resource.
+- Sub-resources are archived instead of hard-deleted.
 
 ### `user_access_assignments`
 
@@ -226,6 +237,7 @@ Important rules:
 - Normal user product lists are derived from accessible resources or sub-resources.
 - Admin access-management screens may derive `NONE` for leaves without an assignment.
 - There is no parent-to-child inheritance and no `CUSTOM` permission state in the MVP.
+- Archived products, resources, and sub-resources are treated as unavailable during access checks.
 
 ### `audit_logs`
 
@@ -266,8 +278,8 @@ users 1 ─── * audit_logs as actor
 ## Deletion Principles
 
 - User deactivation should normally preserve access and audit history for review, while authentication is blocked.
-- Deleting a product must not silently destroy important audit history.
-- Resource deletion may require archival or a transaction that handles dependent permissions deliberately.
+- Products, resources, and sub-resources are archived instead of hard-deleted.
+- Archiving hides product hierarchy records from normal user flows but keeps access and audit references readable.
 - Cascades should be used only when dependent data has no independent historical value.
 
 ## Transaction Candidates

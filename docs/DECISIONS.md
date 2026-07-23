@@ -178,3 +178,28 @@ Store permissions at the product level only, or store permissions independently 
 ### Trade-off
 
 Leaf-level access is more granular than product-level access, but still simpler than inherited hierarchical permissions. The backend must validate that resource assignments target standalone resources and sub-resource assignments target real sub-resources.
+
+## D-009 — Archive Product Hierarchy Records Instead Of Hard Deleting
+
+**Status:** Accepted
+**Date:** 2026-07-23
+
+### Decision
+
+Products, resources, and sub-resources are archived instead of hard-deleted in the MVP.
+
+Archived hierarchy records are hidden from normal user flows and treated as unavailable during access checks. Admin screens may expose archived records with filters when needed.
+
+Access assignments and audit logs remain readable after archival.
+
+### Reason
+
+Archival avoids forcing admins to manually remove many access assignments before deleting a resource, while preserving security history and keeping audit logs understandable.
+
+### Alternative Considered
+
+Block deletion until all related access assignments are removed, or hard-delete records and cascade dependent access rows.
+
+### Trade-off
+
+Archival requires status filtering in queries, but it avoids losing important historical context.
