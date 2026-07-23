@@ -52,8 +52,14 @@ Important rules:
 
 - Normalize email consistently and enforce uniqueness.
 - Store password hashes only.
+- Invited users are inserted into `users` immediately with `status = INVITED`.
+- `name` and `password_hash` are nullable while a user is still invited.
+- Invitation acceptance sets `name`, `password_hash`, and changes `status` to `ACTIVE`.
+- Only `ACTIVE` users can log in.
 - Prefer deactivation over deleting users referenced by audit history.
-- Decide whether roles use a PostgreSQL enum, check constraint, or role table.
+- Use a fixed role constraint for the MVP: `SUPER_ADMIN`, `ADMIN`, `USER`.
+- Use a fixed status constraint for the MVP: `INVITED`, `ACTIVE`, `DEACTIVATED`.
+- Enforce the single-super-admin rule with a partial unique index.
 
 ### `refresh_tokens`
 
@@ -64,14 +70,21 @@ Candidate fields:
 ```text
 id
 user_id
-token_hash or token_selector + token_hash
+token_selector
+token_hash
 expires_at
 revoked_at
 replaced_by_token_id
 created_at
 ```
 
-The Notes API scanned active bcrypt hashes. This project should evaluate a selector/token-family design that permits direct lookup and reuse detection.
+Important rules:
+
+- Store selector plus hashed secret, never the raw refresh token.
+- Use the selector to find the session row efficiently.
+- Use `revoked_at` to support logout and stolen-token invalidation.
+- Use `replaced_by_token_id` to support refresh-token rotation and reuse detection.
+- A refresh token is usable only when it is not expired and not revoked.
 
 ### `invitations`
 
@@ -81,8 +94,8 @@ Candidate fields:
 
 ```text
 id
-email
-role
+user_id
+token_selector
 token_hash
 invited_by_user_id
 expires_at
@@ -90,6 +103,13 @@ accepted_at
 revoked_at
 created_at
 ```
+
+Important rules:
+
+- Store selector plus hashed secret, never the raw invitation token.
+- Keep invitation rows after acceptance and set `accepted_at`.
+- Keep revoked or expired invitation rows for history and reuse prevention.
+- An invitation is usable only when it is not accepted, not revoked, and not expired.
 
 ### `products`
 
@@ -108,6 +128,12 @@ created_by_user_id
 created_at
 updated_at
 ```
+
+Important rules:
+
+- A product must be created with at least one resource in the MVP.
+- Product creation should be transactional: create the product and its first resource together, or create neither.
+- A product can have many resources after creation.
 
 ### `resources`
 
@@ -131,6 +157,12 @@ Candidate uniqueness:
 UNIQUE(product_id, key)
 ```
 
+Important rules:
+
+- Each resource belongs to exactly one product.
+- A resource key must be unique within its product.
+- Resource creation after product setup is allowed.
+
 ### `sub_resources`
 
 Purpose: narrower capabilities within a resource.
@@ -152,6 +184,13 @@ Candidate uniqueness:
 ```text
 UNIQUE(resource_id, key)
 ```
+
+Important rules:
+
+- Sub-resources are optional.
+- A resource can exist and be useful without sub-resources.
+- In the MVP, resources and sub-resources inherit the product access level because access is stored at the product/root level.
+- If granular permissions are added later, a resource without sub-resources can be permissioned directly at the resource level.
 
 ### `user_product_access`
 

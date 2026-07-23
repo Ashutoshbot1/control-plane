@@ -17,14 +17,19 @@ Phase 0 — Product and repository foundation.
 - Finalized the initial `SUPER_ADMIN`, `ADMIN`, and `USER` role capabilities.
 - Finalized the MVP permission boundary: product/root-level access only.
 - Accepted active-grants-only storage: no `user_product_access` row means no access.
+- Accepted invited-user storage: create `users` rows with `INVITED` status, then activate on invitation acceptance.
+- Accepted invitation token storage: selector plus hashed secret, with accepted/revoked rows retained.
+- Accepted refresh-token storage: selector plus hashed secret for efficient lookup and safe rotation.
+- Accepted product setup rule: product creation includes at least one resource in the same transaction.
+- Accepted sub-resource rule: sub-resources are optional; resources can stand alone.
 
 ## In Progress
 
-- MVP database relationships are awaiting review before backend scaffolding.
+- MVP database relationships are being reviewed before backend scaffolding.
 
 ## Next Task
 
-Review the MVP database model against the accepted role and product-access rules, then decide the first backend scaffold structure.
+Continue reviewing the database model table by table. Next focus: deletion behavior for products, resources, and sub-resources.
 
 ## Known Blockers
 
