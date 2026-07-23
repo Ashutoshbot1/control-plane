@@ -334,7 +334,6 @@ Do not create all of these automatically. Confirm them against query patterns:
 
 ## Open Database Decisions
 
-- Single organization versus organization table in the MVP
 - Tool-role representation
 - Soft-delete strategy
 - Refresh-token selector and reuse-detection design

@@ -24,6 +24,7 @@ Phase 0 — Product and repository foundation.
 - Accepted sub-resource rule: sub-resources are optional; standalone resources can receive access directly.
 - Accepted deletion behavior: archive products, resources, and sub-resources instead of hard-deleting.
 - Accepted audit-log shape: actor/target display snapshots, login/logout events, and append-only security history.
+- Accepted single-organization MVP: no organizations table or tenant isolation in the first release.
 
 ## In Progress
 
@@ -31,7 +32,7 @@ Phase 0 — Product and repository foundation.
 
 ## Next Task
 
-Continue reviewing remaining database decisions: single-organization MVP, browser token strategy, and migration tool choice.
+Continue reviewing remaining backend foundation decisions: browser token strategy and migration tool choice.
 
 ## Known Blockers
 
@@ -39,7 +40,6 @@ None.
 
 ## Important Open Decisions
 
-- Whether the MVP is strictly single-organization
 - Browser token/session storage strategy
 - Migration tool choice
 

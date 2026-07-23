@@ -103,10 +103,10 @@ Infrastructure should solve demonstrated problems. Early additions would increas
 
 ## D-006 — Begin With A Single Organization
 
-**Status:** Proposed; requires confirmation  
-**Date:** 2026-07-22
+**Status:** Accepted
+**Date:** 2026-07-23
 
-### Proposed Decision
+### Decision
 
 Model the MVP for one organization managing multiple internal products. Introduce organization-level multi-tenancy after the first deployed release.
 
