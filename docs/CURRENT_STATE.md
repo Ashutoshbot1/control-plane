@@ -23,6 +23,7 @@ Phase 0 — Product and repository foundation.
 - Accepted product setup rule: product creation includes at least one resource in the same transaction.
 - Accepted sub-resource rule: sub-resources are optional; standalone resources can receive access directly.
 - Accepted deletion behavior: archive products, resources, and sub-resources instead of hard-deleting.
+- Accepted audit-log shape: actor/target display snapshots, login/logout events, and append-only security history.
 
 ## In Progress
 
@@ -30,7 +31,7 @@ Phase 0 — Product and repository foundation.
 
 ## Next Task
 
-Continue reviewing the database model table by table. Next focus: audit-log actor/target retention.
+Continue reviewing remaining database decisions: single-organization MVP, browser token strategy, and migration tool choice.
 
 ## Known Blockers
 

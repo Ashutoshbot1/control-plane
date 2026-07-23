@@ -203,3 +203,47 @@ Block deletion until all related access assignments are removed, or hard-delete 
 ### Trade-off
 
 Archival requires status filtering in queries, but it avoids losing important historical context.
+
+## D-010 — Store Audit Display Snapshots
+
+**Status:** Accepted
+**Date:** 2026-07-23
+
+### Decision
+
+Audit logs store structured IDs plus display snapshots for the actor and target user:
+
+```text
+actor_user_id
+actor_name
+actor_role
+action
+target_user_id
+target_user_name
+target_user_role
+target_type
+target_id
+metadata
+```
+
+The admin-facing audit view should be able to show:
+
+```text
+Actor Name | Actor Role | Action | Target User Name | Target User Role | Time
+```
+
+Login and logout are included in MVP audit events.
+
+### Reason
+
+IDs keep audit logs linkable to current records, while display snapshots preserve what the log meant when the event happened. This matters because user names and roles can change later.
+
+### Security Rules
+
+- Do not store passwords, raw tokens, token hashes, or secrets in audit metadata.
+- Write audit logs in the same transaction as important security mutations where practical.
+- Treat audit logs as append-only in normal application flows.
+
+### Trade-off
+
+Snapshot fields duplicate some user data, but they make historical logs easier to understand and safer to display.

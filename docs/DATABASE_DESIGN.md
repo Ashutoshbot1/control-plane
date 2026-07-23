@@ -248,7 +248,12 @@ Candidate fields:
 ```text
 id
 actor_user_id
+actor_name
+actor_role
 action
+target_user_id
+target_user_name
+target_user_role
 target_type
 target_id
 metadata
@@ -260,9 +265,32 @@ created_at
 Important rules:
 
 - Normal application flows must not update audit events.
+- Store actor and target-user display snapshots so old logs remain readable after name or role changes.
 - Avoid storing secrets, tokens, or password material in metadata.
-- Decide how to retain an actor label if a user is later removed.
 - Permission mutations and their audit events should commit atomically.
+- Login and logout are audited in the MVP.
+- Email is not editable in the MVP; name can be edited, so name snapshots matter.
+
+Initial action list:
+
+```text
+LOGIN
+LOGOUT
+INVITED_USER
+ACCEPTED_INVITATION
+CHANGED_USER_ROLE
+DEACTIVATED_USER
+REACTIVATED_USER
+CREATED_PRODUCT
+ARCHIVED_PRODUCT
+CREATED_RESOURCE
+ARCHIVED_RESOURCE
+CREATED_SUB_RESOURCE
+ARCHIVED_SUB_RESOURCE
+GRANTED_ACCESS
+CHANGED_ACCESS
+REVOKED_ACCESS
+```
 
 ## Expected Relationships
 
