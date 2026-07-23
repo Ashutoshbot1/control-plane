@@ -19,7 +19,7 @@ Organization
   -> internal products/applications
   -> products, resources, and sub-resources
   -> users and roles
-  -> explicit root-level access assignments
+  -> explicit leaf-level access assignments
   -> auditable permission changes
 ```
 
@@ -39,9 +39,9 @@ An admin cannot create another admin, assign the `SUPER_ADMIN` role, change thei
 
 ### User
 
-An end user of the managed products. A user can view products available to them and inspect the resources or sub-resources inside each accessible product. For each accessible product, the user can act only according to their assigned access level: `VIEW` or `EDIT`.
+An end user of the managed products. A user can view products where they have access to at least one resource or sub-resource. For each accessible leaf, the user can act only according to their assigned access level: `VIEW` or `EDIT`.
 
-Normal users see only products assigned to them. Resources and sub-resources inside an accessible product inherit the product access level in the MVP. Admin access-management screens may show all products while editing a user's assignments, but normal user product lists should not include unassigned products. Backend authorization remains mandatory for every protected request.
+Normal users see only products that contain at least one accessible resource or sub-resource. Admin access-management screens may show all products while editing a user's assignments, but normal user product lists should not include products with no accessible leaves. Backend authorization remains mandatory for every protected request.
 
 ## Domain Terminology
 
@@ -67,18 +67,24 @@ ADMIN
 USER
 ```
 
-### Product Access
+### Leaf Access
 
-The MVP assigns access at the product/root level:
+The MVP assigns access at the deepest configured level:
 
 ```text
 VIEW
 EDIT
 ```
 
+If a resource has no sub-resources, access is assigned on the resource.
+
+If a resource has sub-resources, access is assigned on its sub-resources, not on the parent resource.
+
+Product access is derived. A user can see a product when they have `VIEW` or `EDIT` access to at least one leaf inside that product.
+
 The database stores active grants only: `VIEW` and `EDIT`. A missing assignment means no access. API responses may still use `NONE` as a derived UI state on admin access-management screens.
 
-Resource-level, sub-resource-level, and `CUSTOM` mixed permissions are deferred until after the core IAM flow is working.
+There is no parent-to-child inheritance and no `CUSTOM` permission state in the MVP.
 
 ## MVP Scope
 
@@ -91,7 +97,7 @@ Resource-level, sub-resource-level, and `CUSTOM` mixed permissions are deferred 
 - Product creation, update, listing, and removal
 - Resource and sub-resource configuration
 - User-to-product assignment
-- Product-level `VIEW` and `EDIT` permissions
+- Leaf-level `VIEW` and `EDIT` permissions
 - Backend authorization for every protected endpoint
 - Security-sensitive audit logs
 - Validation and consistent error responses
@@ -112,8 +118,6 @@ Resource-level, sub-resource-level, and `CUSTOM` mixed permissions are deferred 
 - Single sign-on and external identity providers
 - Mobile application
 - Microservices
-- Resource-level custom permissions
-- Sub-resource-level custom permissions
 - `CUSTOM` mixed permission state
 
 ## Non-Goals

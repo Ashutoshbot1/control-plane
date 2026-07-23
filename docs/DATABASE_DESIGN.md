@@ -2,14 +2,14 @@
 
 ## Status
 
-Conceptual draft. No migration should be written until the MVP database relationships are reviewed against the accepted role and product-access rules.
+Conceptual draft. No migration should be written until the MVP database relationships are reviewed against the accepted role and leaf-level access rules.
 
 ## Design Goals
 
 - Keep authentication data separate from public user responses.
 - Preserve referential integrity with explicit foreign keys.
 - Enforce important uniqueness and nullability rules in PostgreSQL.
-- Keep MVP access records at the product/root level.
+- Keep MVP access records at the leaf level.
 - Preserve historical audit references when accounts are deactivated.
 - Support transactional access updates.
 - Add indexes from actual query patterns rather than guesswork.
@@ -20,13 +20,13 @@ Conceptual draft. No migration should be written until the MVP database relation
 users
   ├── refresh_tokens
   ├── invitations (as inviter or accepted user)
-  ├── user_product_access
+  ├── user_access_assignments
   └── audit_logs (as actor or target)
 
 products
   ├── resources
   │     └── sub_resources
-  └── user_product_access
+  └── user_access_assignments through resources or sub-resources
 ```
 
 ## Proposed Tables
@@ -189,19 +189,20 @@ Important rules:
 
 - Sub-resources are optional.
 - A resource can exist and be useful without sub-resources.
-- In the MVP, resources and sub-resources inherit the product access level because access is stored at the product/root level.
-- If granular permissions are added later, a resource without sub-resources can be permissioned directly at the resource level.
+- If a resource has sub-resources, access is assigned on the sub-resources.
+- If a resource has no sub-resources, access is assigned directly on the resource.
 
-### `user_product_access`
+### `user_access_assignments`
 
-Purpose: declares that a user is assigned to a product and stores the MVP root-level access.
+Purpose: stores active user access grants at the deepest configured level.
 
 Candidate fields:
 
 ```text
 id
 user_id
-product_id
+resource_id
+sub_resource_id
 access_level
 granted_by_user_id
 created_at
@@ -211,17 +212,20 @@ updated_at
 Candidate uniqueness:
 
 ```text
-UNIQUE(user_id, product_id)
+UNIQUE(user_id, resource_id) WHERE sub_resource_id IS NULL
+UNIQUE(user_id, sub_resource_id) WHERE sub_resource_id IS NOT NULL
 ```
 
 Important rules:
 
 - `access_level` is one of `VIEW` or `EDIT`.
-- A missing assignment row means the user cannot use the product.
-- Normal user product lists should return only assigned products.
-- Admin access-management screens may derive `NONE` for products without an assignment.
-- Resources and sub-resources remain product structure in the MVP, not separately permissioned targets.
-- Resource-level, sub-resource-level, and `CUSTOM` permission designs are deferred.
+- A missing assignment row means no access.
+- Exactly one of `resource_id` or `sub_resource_id` is set.
+- If `resource_id` is set, that resource must not have sub-resources.
+- If `sub_resource_id` is set, it belongs to a resource inside a product.
+- Normal user product lists are derived from accessible resources or sub-resources.
+- Admin access-management screens may derive `NONE` for leaves without an assignment.
+- There is no parent-to-child inheritance and no `CUSTOM` permission state in the MVP.
 
 ### `audit_logs`
 
@@ -253,7 +257,7 @@ Important rules:
 ```text
 users 1 ─── * refresh_tokens
 users 1 ─── * invitations as inviter
-users * ─── * products through user_product_access
+users * ─── * resources/sub_resources through user_access_assignments
 products 1 ─── * resources
 resources 1 ─── * sub_resources
 users 1 ─── * audit_logs as actor
@@ -271,7 +275,7 @@ users 1 ─── * audit_logs as actor
 - Accept invitation and activate/create user
 - Rotate refresh token
 - Change role and write audit event
-- Apply a product-access update and write audit events
+- Apply an access-assignment update and write audit events
 - Revoke all access during offboarding
 - Delete/archive hierarchy records and reconcile assignments
 
@@ -285,7 +289,7 @@ Do not create all of these automatically. Confirm them against query patterns:
 - product slug
 - resources by product
 - sub-resources by resource
-- user-product assignment by user and product
+- access assignments by user, resource, and sub-resource
 - audit logs by actor, target, action, and creation time
 
 ## Open Database Decisions

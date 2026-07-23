@@ -82,7 +82,7 @@ An implementation item is marked complete only after relevant verification passe
 
 ## Phase 6 — Permission Engine
 
-- `[ ]` Assign a product to a user
+- `[ ]` Assign a resource or sub-resource leaf to a user
 - `[ ]` Grant `VIEW` or `EDIT` access
 - `[ ]` Revoke access explicitly
 - `[ ]` Calculate effective permissions
@@ -90,7 +90,7 @@ An implementation item is marked complete only after relevant verification passe
 - `[ ]` Prevent grants beyond the actor's authority
 - `[ ]` Apply multi-change updates transactionally
 - `[ ]` Make sensitive mutations idempotent where needed
-- `[ ]` Test allow, deny, product-access, and escalation cases
+- `[ ]` Test allow, deny, leaf-access, and escalation cases
 
 ## Phase 7 — Audit Logging
 

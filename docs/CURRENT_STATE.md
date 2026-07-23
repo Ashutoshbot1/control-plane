@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-07-22
+Last updated: 2026-07-23
 
 ## Current Phase
 
@@ -15,13 +15,13 @@ Phase 0 — Product and repository foundation.
 - Drafted the product scope, roadmap, API surface, and database entities.
 - Declared `frontend/` and `backend/` intentionally empty until planning is reviewed.
 - Finalized the initial `SUPER_ADMIN`, `ADMIN`, and `USER` role capabilities.
-- Finalized the MVP permission boundary: product/root-level access only.
-- Accepted active-grants-only storage: no `user_product_access` row means no access.
+- Finalized the MVP permission boundary: leaf-level access only.
+- Accepted active-grants-only storage: no access-assignment row means no access.
 - Accepted invited-user storage: create `users` rows with `INVITED` status, then activate on invitation acceptance.
 - Accepted invitation token storage: selector plus hashed secret, with accepted/revoked rows retained.
 - Accepted refresh-token storage: selector plus hashed secret for efficient lookup and safe rotation.
 - Accepted product setup rule: product creation includes at least one resource in the same transaction.
-- Accepted sub-resource rule: sub-resources are optional; resources can stand alone.
+- Accepted sub-resource rule: sub-resources are optional; standalone resources can receive access directly.
 
 ## In Progress
 

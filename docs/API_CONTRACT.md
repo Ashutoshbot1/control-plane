@@ -2,7 +2,7 @@
 
 ## Status
 
-Draft endpoint inventory. Routes and payloads must be finalized only after role capabilities, product-level access rules, and database relationships are agreed.
+Draft endpoint inventory. Routes and payloads must be finalized only after role capabilities, leaf-level access rules, and database relationships are agreed.
 
 ## Base Convention
 

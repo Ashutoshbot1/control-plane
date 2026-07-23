@@ -146,33 +146,35 @@ This keeps the MVP authorization model understandable while still demonstrating 
 
 A single super admin simplifies the first release, but later multi-organization support may require organization owners or scoped super-admin equivalents.
 
-## D-008 — Keep MVP Access At The Product Root Level
+## D-008 — Keep MVP Access At The Leaf Level
 
 **Status:** Accepted
 **Date:** 2026-07-22
 
 ### Decision
 
-The MVP assigns user access at the product/root level only. A product assignment has one stored access level: `VIEW` or `EDIT`.
+The MVP assigns user access at the deepest configured level. A leaf assignment has one stored access level: `VIEW` or `EDIT`.
 
-ControlPlane stores active grants only. A missing `user_product_access` row means the user has no access to that product. API responses may still derive `NONE` for admin access-management screens.
+If a resource has no sub-resources, access is assigned directly on the resource. If a resource has sub-resources, access is assigned on those sub-resources, not on the parent resource.
 
-Resources and sub-resources remain part of the product structure, but they are not separately permissioned in the first release. If a user can access a product, they can inspect its resources and sub-resources according to the product access level.
+Product access is derived. A user can see a product when they have `VIEW` or `EDIT` access to at least one resource or sub-resource inside that product.
 
-Normal users see only assigned products in the MVP. Unassigned products do not need to be shown as disabled in normal user product lists.
+ControlPlane stores active grants only. A missing access-assignment row means the user has no access to that leaf. API responses may still derive `NONE` for admin access-management screens.
 
-`CUSTOM` and child-level overrides are deferred until after the core IAM flow works.
+Normal users see only products with at least one accessible leaf. Products with no accessible leaves do not need to be shown as disabled in normal user product lists.
+
+There is no parent-to-child inheritance and no `CUSTOM` permission state in the MVP.
 
 ### Reason
 
-This matches the existing frontend logic, keeps the first backend permission model clear, and avoids adding hierarchical permission complexity before authentication, product access, and authorization tests exist.
+This matches the intended frontend logic while keeping the backend model simpler than full hierarchical inheritance. Access is explicit at one level only: the leaf level.
 
 Storing only active grants keeps the database smaller and makes access queries safer: joined rows represent real access, while revocation is represented by deleting the active grant and writing an audit event.
 
 ### Alternative Considered
 
-Store permissions independently at product, resource, and sub-resource levels, with `CUSTOM` representing mixed child permissions.
+Store permissions at the product level only, or store permissions independently at product, resource, and sub-resource levels with inheritance and `CUSTOM` mixed states.
 
 ### Trade-off
 
-The MVP is less granular, but it is easier to implement, test, explain, and evolve. Hierarchical permissions can be added later as a versioned expansion of the access model.
+Leaf-level access is more granular than product-level access, but still simpler than inherited hierarchical permissions. The backend must validate that resource assignments target standalone resources and sub-resource assignments target real sub-resources.
