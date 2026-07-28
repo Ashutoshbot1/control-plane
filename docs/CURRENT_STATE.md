@@ -26,14 +26,15 @@ Phase 0 — Product and repository foundation.
 - Accepted audit-log shape: actor/target display snapshots, login/logout events, and append-only security history.
 - Accepted single-organization MVP: no organizations table or tenant isolation in the first release.
 - Accepted browser token strategy: in-memory access token plus httpOnly refresh-token cookie with rotation.
+- Accepted migration tool: `node-pg-migrate`.
 
 ## In Progress
 
-- MVP database relationships are being reviewed before backend scaffolding.
+- Backend scaffold is ready to begin.
 
 ## Next Task
 
-Continue reviewing remaining backend foundation decision: migration tool choice.
+Scaffold the Express and TypeScript backend package.
 
 ## Known Blockers
 
@@ -41,7 +42,7 @@ None.
 
 ## Important Open Decisions
 
-- Migration tool choice
+None blocking backend scaffolding.
 
 ## Verification State
 
@@ -54,4 +55,4 @@ Git: initialized and pushed by the user
 
 ## Resume Point
 
-When resuming, read `AGENTS.md`, this file, and `ROADMAP.md`. Start with database relationship review before scaffolding backend code.
+When resuming, read `AGENTS.md`, this file, and `ROADMAP.md`. Start backend scaffolding in `backend/`.

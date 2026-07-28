@@ -281,3 +281,24 @@ This limits long-lived token exposure to JavaScript while keeping API authorizat
 ### Trade-off
 
 The frontend must restore the session after page reload by calling the refresh endpoint, and cross-origin deployments require deliberate CORS and cookie configuration.
+
+## D-012 — Use node-pg-migrate For Database Migrations
+
+**Status:** Accepted
+**Date:** 2026-07-28
+
+### Decision
+
+Use `node-pg-migrate` for PostgreSQL schema migrations in the Express backend.
+
+### Reason
+
+`node-pg-migrate` gives proper migration tracking while keeping PostgreSQL schema design visible. It fits the project goal better than hiding too much database behavior behind a full ORM.
+
+### Alternative Considered
+
+Prisma migrations, Drizzle migrations, and a custom raw-SQL migration runner.
+
+### Trade-off
+
+The project will write more SQL/schema detail directly, but that supports the backend learning goal.

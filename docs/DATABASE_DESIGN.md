@@ -334,8 +334,4 @@ Do not create all of these automatically. Confirm them against query patterns:
 
 ## Open Database Decisions
 
-- Tool-role representation
-- Soft-delete strategy
-- Refresh-token selector and reuse-detection design
-- Migration library
 - Timestamp/time-zone convention
