@@ -247,3 +247,37 @@ IDs keep audit logs linkable to current records, while display snapshots preserv
 ### Trade-off
 
 Snapshot fields duplicate some user data, but they make historical logs easier to understand and safer to display.
+
+## D-011 — Store Access Token In Memory And Refresh Token In HttpOnly Cookie
+
+**Status:** Accepted
+**Date:** 2026-07-28
+
+### Decision
+
+ControlPlane uses this browser session strategy:
+
+```text
+Access token: short-lived and stored in frontend memory only
+Refresh token: longer-lived and stored in an httpOnly Secure SameSite cookie
+Protected API calls: Authorization Bearer access token
+Refresh endpoint: cookie-based
+```
+
+On page reload, the in-memory access token is lost. The frontend calls `POST /api/v1/auth/refresh`; if the refresh cookie is valid, the backend rotates the refresh token and returns a new access token.
+
+### Reason
+
+This limits long-lived token exposure to JavaScript while keeping API authorization explicit through the `Authorization` header.
+
+### Security Rules
+
+- Do not store access tokens in `localStorage` or `sessionStorage`.
+- Do not expose refresh tokens to frontend JavaScript.
+- Rotate refresh tokens on refresh.
+- Revoke refresh tokens on logout and sensitive account events.
+- Use `Secure` cookies in production.
+
+### Trade-off
+
+The frontend must restore the session after page reload by calling the refresh endpoint, and cross-origin deployments require deliberate CORS and cookie configuration.

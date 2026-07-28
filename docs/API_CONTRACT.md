@@ -14,6 +14,19 @@ Authentication: protected endpoints require an authenticated session/access toke
 
 Versioning is included because the frontend and backend are independently deployable clients and services. It is not permission to maintain multiple versions prematurely.
 
+## Browser Session Strategy
+
+```text
+Access token: returned in JSON and stored in frontend memory only
+Refresh token: stored in an httpOnly cookie
+Protected API calls: use Authorization: Bearer <access_token>
+Refresh calls: browser sends the refresh cookie automatically
+```
+
+On page reload, the frontend loses the in-memory access token and calls `POST /api/v1/auth/refresh` to restore the session if the refresh cookie is still valid.
+
+Refresh tokens are rotated. Logout revokes the active refresh token and clears the refresh cookie.
+
 ## Response Conventions
 
 Proposed success response:

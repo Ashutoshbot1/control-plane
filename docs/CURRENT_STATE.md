@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-07-23
+Last updated: 2026-07-28
 
 ## Current Phase
 
@@ -25,6 +25,7 @@ Phase 0 — Product and repository foundation.
 - Accepted deletion behavior: archive products, resources, and sub-resources instead of hard-deleting.
 - Accepted audit-log shape: actor/target display snapshots, login/logout events, and append-only security history.
 - Accepted single-organization MVP: no organizations table or tenant isolation in the first release.
+- Accepted browser token strategy: in-memory access token plus httpOnly refresh-token cookie with rotation.
 
 ## In Progress
 
@@ -32,7 +33,7 @@ Phase 0 — Product and repository foundation.
 
 ## Next Task
 
-Continue reviewing remaining backend foundation decisions: browser token strategy and migration tool choice.
+Continue reviewing remaining backend foundation decision: migration tool choice.
 
 ## Known Blockers
 
@@ -40,7 +41,6 @@ None.
 
 ## Important Open Decisions
 
-- Browser token/session storage strategy
 - Migration tool choice
 
 ## Verification State
