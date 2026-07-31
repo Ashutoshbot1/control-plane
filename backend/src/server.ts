@@ -1,5 +1,5 @@
-import app from "./app";
-import "./config/env";
+import app from "./app.js";
+import "./config/env.js";
 
 const rawPort = process.env.PORT;
 const PORT = rawPort ? Number(rawPort) : null;
