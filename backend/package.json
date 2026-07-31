@@ -5,7 +5,7 @@
   "license": "ISC",
   "author": "Ashutosh Singh",
   "type": "module",
-  "main": "server.ts",
+  "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
