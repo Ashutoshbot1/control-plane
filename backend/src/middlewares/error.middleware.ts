@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { AppError } from "../errors/app.error.js";
+import { sendError } from "../utils/api-response.js";
 
 export const errorHandler = (
   err: unknown,
@@ -10,12 +11,8 @@ export const errorHandler = (
   console.error(err);
 
   if (err instanceof AppError) {
-    return res.status(err.statusCode).json({
-      message: err.message,
-    });
+    return sendError(res, err.statusCode, err.message);
   }
 
-  res.status(500).json({
-    message: "Internal server error",
-  });
+  return sendError(res, 500, "Internal server error");
 };

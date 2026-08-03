@@ -1,6 +1,7 @@
 import express from "express";
 import healthRouter from "./routes/health.routes.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
+import { sendError } from "./utils/api-response.js";
 
 const app = express();
 
@@ -11,7 +12,7 @@ app.use("/health", healthRouter);
 
 // Error handlers
 app.use((_req, res) => {
-  res.status(404).json({ message: "Route not found" });
+  sendError(res, 404, "Route not found");
 });
 
 app.use(errorHandler);

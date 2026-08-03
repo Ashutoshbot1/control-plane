@@ -18,7 +18,7 @@ export const sendError = (
   statusCode: number,
   message: string,
 ) => {
-  return res.status(statusCode).json({
+  res.status(statusCode).json({
     success: false,
     message,
   });
