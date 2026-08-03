@@ -1,10 +1,10 @@
 # Current State
 
-Last updated: 2026-07-28
+Last updated: 2026-08-03
 
 ## Current Phase
 
-Phase 0 — Product and repository foundation.
+Phase 1 — Backend foundation.
 
 ## Completed
 
@@ -13,7 +13,14 @@ Phase 0 — Product and repository foundation.
 - Chosen the high-level architecture: Next.js frontend plus a separate Express and TypeScript backend.
 - Chosen a modular monolith for the backend.
 - Drafted the product scope, roadmap, API surface, and database entities.
-- Declared `frontend/` and `backend/` intentionally empty until planning is reviewed.
+- Scaffolded the backend as a separate Express and TypeScript package.
+- Separated `app.ts` and `server.ts`.
+- Added strict `PORT` loading and validation through `src/config/env.ts`.
+- Added `GET /health`.
+- Added a base 404 JSON handler.
+- Added centralized error middleware and `AppError`.
+- Added `asyncHandler` for wrapping async controllers.
+- Added TypeScript project configuration and a `typecheck` script.
 - Finalized the initial `SUPER_ADMIN`, `ADMIN`, and `USER` role capabilities.
 - Finalized the MVP permission boundary: leaf-level access only.
 - Accepted active-grants-only storage: no access-assignment row means no access.
@@ -30,11 +37,11 @@ Phase 0 — Product and repository foundation.
 
 ## In Progress
 
-- Backend scaffold is ready to begin.
+- Backend foundation cleanup is in progress.
 
 ## Next Task
 
-Scaffold the Express and TypeScript backend package.
+Add response conventions and request logging.
 
 ## Known Blockers
 
@@ -48,11 +55,11 @@ None blocking backend scaffolding.
 
 ```text
 Frontend: intentionally empty; no build available
-Backend: intentionally empty; no build available
-Tests: not configured
+Backend: Express and TypeScript scaffold exists; `npm run typecheck` passes
+Tests: not configured yet
 Git: initialized and pushed by the user
 ```
 
 ## Resume Point
 
-When resuming, read `AGENTS.md`, this file, and `ROADMAP.md`. Start backend scaffolding in `backend/`.
+When resuming, read `AGENTS.md`, this file, and `ROADMAP.md`. Continue Phase 1 in `backend/` with response conventions, request logging, then PostgreSQL readiness setup.

@@ -23,12 +23,12 @@ An implementation item is marked complete only after relevant verification passe
 
 ## Phase 1 — Backend Foundation
 
-- `[ ]` Create the Express and TypeScript package
-- `[ ]` Separate `app.ts` and `server.ts`
-- `[ ]` Add environment validation
+- `[x]` Create the Express and TypeScript package
+- `[x]` Separate `app.ts` and `server.ts`
+- `[x]` Add environment validation
 - `[ ]` Configure PostgreSQL connection pooling
-- `[ ]` Add health and readiness endpoints
-- `[ ]` Add centralized errors and response conventions
+- `[~]` Add health and readiness endpoints
+- `[~]` Add centralized errors and response conventions
 - `[ ]` Add Zod validation middleware
 - `[ ]` Add structured request and error logging
 - `[ ]` Add test runner and integration-test foundation

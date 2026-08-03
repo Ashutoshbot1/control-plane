@@ -49,4 +49,30 @@ These concepts were already practised in the Notes API and should receive revisi
 
 ## Entries
 
-No project-specific concept has been marked clear yet. Add the first entry only after implementation or discussion produces reusable understanding.
+## Higher-Order Async Route Wrapper
+
+Question or confusion:
+
+How can `asyncHandler(healthCheck)` pass `req`, `res`, and `next` to `healthCheck`, and why does TypeScript allow a controller to ignore `next`?
+
+Clarification:
+
+`asyncHandler` is a higher-order function. It receives a controller during route setup and returns a new Express route handler. Later, Express calls that returned handler with `req`, `res`, and `next`. The wrapper then calls the original controller and forwards rejected promises to `next`.
+
+Small example:
+
+```ts
+router.get("/", asyncHandler(healthCheck));
+```
+
+This is similar to:
+
+```ts
+router.get("/", (req, res, next) => {
+  Promise.resolve(healthCheck(req, res, next)).catch(next);
+});
+```
+
+Why it matters:
+
+It avoids repeating `try/catch` in every async controller while still sending errors to the centralized error middleware. A controller may accept fewer parameters because JavaScript ignores extra arguments.
