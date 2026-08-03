@@ -2,10 +2,12 @@ import express from "express";
 import healthRouter from "./routes/health.routes.js";
 import { errorHandler } from "./middlewares/error.middleware.js";
 import { sendError } from "./utils/api-response.js";
+import { requestLogger } from "./middlewares/request-logger.middleware.js";
 
 const app = express();
 
 app.use(express.json());
+app.use(requestLogger);
 
 // Routes
 app.use("/health", healthRouter);
