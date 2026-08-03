@@ -1,12 +1,7 @@
 import app from "./app.js";
-import "./config/env.js";
+import { envs } from "./config/env.js";
 
-const rawPort = process.env.PORT;
-const PORT = rawPort ? Number(rawPort) : null;
-
-if (!PORT) {
-  throw new Error("Port is not configured on server");
-}
+const { PORT } = envs;
 
 app.listen(PORT, () => {
   console.log(`Server is running on ${PORT}`);
