@@ -19,8 +19,15 @@ if (!NODE_ENV) {
   throw new Error("NODE_ENV is not configured on server");
 }
 
+// DATABASE_URL
+const DATABASE_URL = process.env.DATABASE_URL;
+if (!DATABASE_URL) {
+  throw new Error("DATABASE_URL is not configured on server");
+}
+
 // RETURNING DATA
 export const envs = {
   PORT,
   NODE_ENV,
+  DATABASE_URL,
 };
