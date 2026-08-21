@@ -8,11 +8,15 @@ export const shorthands = undefined;
  * @param run {() => void | undefined}
  * @returns {Promise<void> | void}
  */
-export const up = (pgm) => {};
+export const up = (pgm) => {
+  pgm.createType("user_role", ["SUPER_ADMIN", "ADMIN", "USER"]);
+};
 
 /**
  * @param pgm {import('node-pg-migrate').MigrationBuilder}
  * @param run {() => void | undefined}
  * @returns {Promise<void> | void}
  */
-export const down = (pgm) => {};
+export const down = (pgm) => {
+  pgm.dropType("user_role");
+};
