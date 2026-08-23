@@ -49,6 +49,30 @@ These concepts were already practised in the Notes API and should receive revisi
 
 ## Entries
 
+## Database Migration Direction
+
+Question or confusion:
+
+Why does a migration need both `up` and `down`, and why must a custom enum type be created before the table that uses it?
+
+Clarification:
+
+`up` applies one schema change; `down` reverses it. PostgreSQL must know a custom enum type before a table can declare a column of that type. When reversing the users migration, the table is dropped before the enum because the table depends on the enum.
+
+Small example:
+
+```js
+pgm.createType("user_role", ["SUPER_ADMIN", "ADMIN", "USER"]);
+pgm.createTable("users", { role: { type: "user_role", notNull: true } });
+
+pgm.dropTable("users");
+pgm.dropType("user_role");
+```
+
+Why it matters:
+
+Reversible migrations make local development, testing, and safe schema iteration predictable. Dependency order prevents database errors during both migration and rollback.
+
 ## Higher-Order Async Route Wrapper
 
 Question or confusion:

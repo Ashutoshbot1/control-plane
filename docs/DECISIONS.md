@@ -302,3 +302,24 @@ Prisma migrations, Drizzle migrations, and a custom raw-SQL migration runner.
 ### Trade-off
 
 The project will write more SQL/schema detail directly, but that supports the backend learning goal.
+
+## D-013 — Keep Invitation Lifecycle Separate From User Account State
+
+**Status:** Accepted
+**Date:** 2026-08-23
+
+### Decision
+
+Create an `invitations` table for invitation lifecycle details. The `users` table has a nullable `password_hash` during onboarding and a nullable `deactivated_at` for account deactivation; it does not store an invitation-status enum.
+
+### Reason
+
+An invitation is an event that can be accepted, revoked, expired, or reissued. Separating it avoids duplicating lifecycle state on the user row and keeps the user record focused on identity, role, authentication, and account availability.
+
+### Alternative Considered
+
+Store `INVITED`, `ACTIVE`, and `DEACTIVATED` together in a user-status enum.
+
+### Trade-off
+
+Admin user-list queries must join the latest invitation when they need to show invitation state, but the model handles invitation history and re-invitation more cleanly.

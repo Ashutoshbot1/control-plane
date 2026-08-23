@@ -1,10 +1,10 @@
 # Current State
 
-Last updated: 2026-08-03
+Last updated: 2026-08-23
 
 ## Current Phase
 
-Phase 1 — Backend foundation.
+Phase 2 — Database foundation.
 
 ## Completed
 
@@ -34,14 +34,21 @@ Phase 1 — Backend foundation.
 - Accepted single-organization MVP: no organizations table or tenant isolation in the first release.
 - Accepted browser token strategy: in-memory access token plus httpOnly refresh-token cookie with rotation.
 - Accepted migration tool: `node-pg-migrate`.
+- Configured a PostgreSQL `Pool` using the validated `DATABASE_URL`.
+- Added `GET /ready`, which verifies database connectivity with `SELECT 1 AS ok`.
+- Added Docker Compose for local PostgreSQL; the container exposes PostgreSQL on host port `5434` to avoid the existing local PostgreSQL service on port `5432`.
+- Installed and configured `pg` and `node-pg-migrate`.
+- Created and applied the initial `users` schema migration.
+- Added the `user_role` enum: `SUPER_ADMIN`, `ADMIN`, and `USER`.
+- Created the `users` table with unique email, nullable password hash for invitation onboarding, nullable `deactivated_at`, and timestamp defaults.
 
 ## In Progress
 
-- Backend foundation cleanup is in progress.
+- The remaining database schema is in progress.
 
 ## Next Task
 
-Add response conventions and request logging.
+Create the invitations schema, then refresh-token storage.
 
 ## Known Blockers
 
@@ -55,11 +62,12 @@ None blocking backend scaffolding.
 
 ```text
 Frontend: intentionally empty; no build available
-Backend: Express and TypeScript scaffold exists; `npm run typecheck` passes
+Backend: `npm run typecheck` passes; `/health` and database-backed `/ready` are available
+Database: local Docker PostgreSQL is configured; the initial users migration is applied and verified
 Tests: not configured yet
-Git: initialized and pushed by the user
+Git: main is synchronized with origin
 ```
 
 ## Resume Point
 
-When resuming, read `AGENTS.md`, this file, and `ROADMAP.md`. Continue Phase 1 in `backend/` with response conventions, request logging, then PostgreSQL readiness setup.
+When resuming, read `AGENTS.md`, this file, and `ROADMAP.md`. Continue Phase 2 in `backend/` by designing and migrating invitations, then refresh tokens.

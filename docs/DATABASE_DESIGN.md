@@ -2,7 +2,7 @@
 
 ## Status
 
-Conceptual draft. No migration should be written until the MVP database relationships are reviewed against the accepted role and leaf-level access rules.
+The initial users-and-roles migration is applied. Remaining tables are still a conceptual draft and must be reviewed against the accepted role and leaf-level access rules before migration.
 
 ## Design Goals
 
@@ -43,7 +43,7 @@ name
 email
 password_hash
 role
-status
+deactivated_at
 created_at
 updated_at
 ```
@@ -52,13 +52,11 @@ Important rules:
 
 - Normalize email consistently and enforce uniqueness.
 - Store password hashes only.
-- Invited users are inserted into `users` immediately with `status = INVITED`.
-- `name` and `password_hash` are nullable while a user is still invited.
-- Invitation acceptance sets `name`, `password_hash`, and changes `status` to `ACTIVE`.
-- Only `ACTIVE` users can log in.
+- Invited users are inserted into `users` immediately with a required name and nullable `password_hash`.
+- Invitation lifecycle belongs to `invitations`; `accepted_at` and `revoked_at` describe the invitation rather than duplicating invitation state on the user record.
+- Invitation acceptance sets `password_hash`; only users with a password hash and no `deactivated_at` can log in.
 - Prefer deactivation over deleting users referenced by audit history.
 - Use a fixed role constraint for the MVP: `SUPER_ADMIN`, `ADMIN`, `USER`.
-- Use a fixed status constraint for the MVP: `INVITED`, `ACTIVE`, `DEACTIVATED`.
 - Enforce the single-super-admin rule with a partial unique index.
 
 ### `refresh_tokens`

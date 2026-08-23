@@ -26,18 +26,18 @@ An implementation item is marked complete only after relevant verification passe
 - `[x]` Create the Express and TypeScript package
 - `[x]` Separate `app.ts` and `server.ts`
 - `[x]` Add environment validation
-- `[ ]` Configure PostgreSQL connection pooling
-- `[~]` Add health and readiness endpoints
-- `[~]` Add centralized errors and response conventions
+- `[x]` Configure PostgreSQL connection pooling
+- `[x]` Add health and readiness endpoints
+- `[x]` Add centralized errors and response conventions
 - `[ ]` Add Zod validation middleware
 - `[ ]` Add structured request and error logging
 - `[ ]` Add test runner and integration-test foundation
-- `[ ]` Add Docker Compose for local PostgreSQL
+- `[x]` Add Docker Compose for local PostgreSQL
 
 ## Phase 2 — Database Foundation
 
-- `[ ]` Choose and configure a migration workflow
-- `[ ]` Create users and roles schema
+- `[x]` Choose and configure a migration workflow
+- `[x]` Create users and roles schema
 - `[ ]` Create products, resources, and sub-resources schema
 - `[ ]` Create access-assignment schema
 - `[ ]` Create refresh-token and invitation schema
