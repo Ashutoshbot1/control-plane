@@ -2,7 +2,7 @@
 
 ## Status
 
-The initial users-and-roles migration is applied. Remaining tables are still a conceptual draft and must be reviewed against the accepted role and leaf-level access rules before migration.
+The users-and-roles, invitations, and refresh-token migrations are applied. Remaining tables are still a conceptual draft and must be reviewed against the accepted role and leaf-level access rules before migration.
 
 ## Design Goals
 

@@ -40,7 +40,7 @@ An implementation item is marked complete only after relevant verification passe
 - `[x]` Create users and roles schema
 - `[ ]` Create products, resources, and sub-resources schema
 - `[ ]` Create access-assignment schema
-- `[ ]` Create refresh-token and invitation schema
+- `[x]` Create refresh-token and invitation schema
 - `[ ]` Create audit-log schema
 - `[ ]` Add development seed data
 - `[ ]` Review foreign keys, delete behavior, uniqueness, and nullability

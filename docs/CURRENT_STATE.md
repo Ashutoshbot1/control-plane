@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-08-23
+Last updated: 2026-08-25
 
 ## Current Phase
 
@@ -24,7 +24,7 @@ Phase 2 — Database foundation.
 - Finalized the initial `SUPER_ADMIN`, `ADMIN`, and `USER` role capabilities.
 - Finalized the MVP permission boundary: leaf-level access only.
 - Accepted active-grants-only storage: no access-assignment row means no access.
-- Accepted invited-user storage: create `users` rows with `INVITED` status, then activate on invitation acceptance.
+- Accepted invited-user storage: create `users` rows with a nullable `password_hash`; keep invitation lifecycle state in `invitations`, then set the password on acceptance.
 - Accepted invitation token storage: selector plus hashed secret, with accepted/revoked rows retained.
 - Accepted refresh-token storage: selector plus hashed secret for efficient lookup and safe rotation.
 - Accepted product setup rule: product creation includes at least one resource in the same transaction.
@@ -41,6 +41,10 @@ Phase 2 — Database foundation.
 - Created and applied the initial `users` schema migration.
 - Added the `user_role` enum: `SUPER_ADMIN`, `ADMIN`, and `USER`.
 - Created the `users` table with unique email, nullable password hash for invitation onboarding, nullable `deactivated_at`, and timestamp defaults.
+- Created and applied the `invitations` schema migration with selector-plus-hash token storage, inviter and invited-user references, expiry, acceptance, and revocation timestamps.
+- Added a constraint preventing an invitation from being both accepted and revoked.
+- Created and applied the `refresh_tokens` schema migration with selector-plus-hash token storage, expiry and revocation timestamps, and a self-reference for token rotation chains.
+- Added a constraint preventing a refresh token from replacing itself.
 
 ## In Progress
 
@@ -48,7 +52,7 @@ Phase 2 — Database foundation.
 
 ## Next Task
 
-Create the invitations schema, then refresh-token storage.
+Create the products, resources, and sub-resources schema.
 
 ## Known Blockers
 
@@ -63,11 +67,11 @@ None blocking backend scaffolding.
 ```text
 Frontend: intentionally empty; no build available
 Backend: `npm run typecheck` passes; `/health` and database-backed `/ready` are available
-Database: local Docker PostgreSQL is configured; the initial users migration is applied and verified
+Database: local Docker PostgreSQL is configured; users, invitations, and refresh-token migrations are applied and verified, including rollback and re-apply of the refresh-token migration
 Tests: not configured yet
 Git: main is synchronized with origin
 ```
 
 ## Resume Point
 
-When resuming, read `AGENTS.md`, this file, and `ROADMAP.md`. Continue Phase 2 in `backend/` by designing and migrating invitations, then refresh tokens.
+When resuming, read `AGENTS.md`, this file, and `ROADMAP.md`. Continue Phase 2 in `backend/` by designing and migrating products, resources, and sub-resources.
