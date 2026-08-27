@@ -100,3 +100,25 @@ router.get("/", (req, res, next) => {
 Why it matters:
 
 It avoids repeating `try/catch` in every async controller while still sending errors to the centralized error middleware. A controller may accept fewer parameters because JavaScript ignores extra arguments.
+
+## Rotating Refresh Tokens And Session Recovery
+
+Question or confusion:
+
+If every successful refresh creates a new refresh token, what makes a refresh token long-lived, and what happens when access or refresh tokens expire?
+
+Clarification:
+
+An access token is short-lived and repeatedly used for protected APIs. A refresh token is long-lived but single-use: it remains valid until its family expiry unless it is presented to the refresh endpoint, where it is revoked and replaced. The successor retains the same absolute family expiry. Lost in-memory access tokens are restored with the httpOnly refresh cookie; an expired or invalid refresh token requires a new login.
+
+Small example:
+
+```text
+R1 active, expires 30 Sep
+R1 refreshes -> R1 revoked, R2 active, expires 30 Sep
+R1 reused   -> revoke R2 and require login
+```
+
+Why it matters:
+
+Rotation makes replay of an already-used refresh token detectable while preserving a usable browser session without storing long-lived credentials in JavaScript.

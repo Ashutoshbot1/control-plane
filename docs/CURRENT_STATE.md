@@ -69,7 +69,7 @@ Frontend: intentionally empty; no build available
 Backend: `npm run typecheck` passes; `/health` and database-backed `/ready` are available
 Database: local Docker PostgreSQL is configured; users, invitations, and refresh-token migrations are applied and verified, including rollback and re-apply of the refresh-token migration
 Tests: not configured yet
-Git: main is synchronized with origin
+Git: main matches origin; the current authentication-lifecycle documentation changes are uncommitted
 ```
 
 ## Resume Point

@@ -52,9 +52,9 @@ controlplane/
 ## Project Status
 
 ```text
-Current phase: Product definition and repository foundation
+Current phase: Database foundation
 Frontend: Empty; permitted source has not yet been copied
-Backend: Empty; API has not yet been scaffolded
+Backend: Express/TypeScript foundation and users, invitations, and refresh-token migrations are complete
 ```
 
 See [`docs/CURRENT_STATE.md`](docs/CURRENT_STATE.md) for the active task and [`docs/ROADMAP.md`](docs/ROADMAP.md) for milestone progress.

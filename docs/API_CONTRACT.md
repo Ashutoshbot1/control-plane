@@ -27,6 +27,8 @@ On page reload, the frontend loses the in-memory access token and calls `POST /a
 
 Refresh tokens are rotated. Logout revokes the active refresh token and clears the refresh cookie.
 
+For a protected-route `401`, the frontend may make one refresh-and-retry attempt. It must not refresh after the refresh endpoint itself returns `401`, must retry the original request at most once, and must clear auth state and show login if refresh fails. `403` responses must not trigger token refresh.
+
 ## Response Conventions
 
 Proposed success response:
@@ -90,6 +92,22 @@ POST /api/v1/auth/forgot-password
 POST /api/v1/auth/reset-password
 POST /api/v1/auth/verify-invitation
 ```
+
+### Authentication Endpoint Behavior
+
+```text
+POST /auth/login
+  200 -> access token in JSON; refresh token set as an httpOnly cookie
+
+POST /auth/refresh
+  200 -> new access token in JSON; old refresh token revoked and replacement cookie set
+  401 -> missing, invalid, revoked, expired, or reused refresh token; no replacement issued
+
+POST /auth/logout
+  204 -> active refresh token revoked when present; refresh cookie cleared; no replacement issued
+```
+
+On app startup, missing in-memory access state triggers one refresh attempt so a valid refresh cookie can restore the session. The frontend must coordinate simultaneous `401` responses so only one refresh request runs; pending requests wait for its result.
 
 ### Invitations
 

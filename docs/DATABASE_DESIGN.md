@@ -83,6 +83,10 @@ Important rules:
 - Use `revoked_at` to support logout and stolen-token invalidation.
 - Use `replaced_by_token_id` to support refresh-token rotation and reuse detection.
 - A refresh token is usable only when it is not expired and not revoked.
+- Rotation creates a successor row, revokes the presented row, and stores the successor ID in `replaced_by_token_id` in one transaction.
+- Each successor keeps its predecessor's `expires_at`; rotation does not extend the initial 30-day family deadline.
+- A revoked token with a non-null `replaced_by_token_id` presented again signals possible reuse. Revoke its active descendants and require a new login.
+- A logout-revoked token has `replaced_by_token_id = NULL`; an expired token needs no extra revocation write to be invalid.
 
 ### `invitations`
 

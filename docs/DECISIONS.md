@@ -264,7 +264,9 @@ Protected API calls: Authorization Bearer access token
 Refresh endpoint: cookie-based
 ```
 
-On page reload, the in-memory access token is lost. The frontend calls `POST /api/v1/auth/refresh`; if the refresh cookie is valid, the backend rotates the refresh token and returns a new access token.
+The initial policy uses 15-minute access tokens and 30-day fixed-expiry refresh-token families. On page reload, the in-memory access token is lost. The frontend calls `POST /api/v1/auth/refresh`; if the refresh cookie is valid, the backend rotates the refresh token and returns a new access token. Rotation creates a replacement refresh token but preserves the family's original expiry.
+
+Refresh rotation must be transactional: validate and lock the old token, create its successor, revoke the old token, and record its successor ID before committing. An expired refresh token creates no replacement and requires login. Logout revokes the active refresh token and clears the cookie; it is not a rotation.
 
 ### Reason
 
@@ -276,6 +278,7 @@ This limits long-lived token exposure to JavaScript while keeping API authorizat
 - Do not expose refresh tokens to frontend JavaScript.
 - Rotate refresh tokens on refresh.
 - Revoke refresh tokens on logout and sensitive account events.
+- Treat reuse of an already-rotated token as a possible compromise and revoke its active descendants.
 - Use `Secure` cookies in production.
 
 ### Trade-off
