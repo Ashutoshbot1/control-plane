@@ -122,3 +122,17 @@ R1 reused   -> revoke R2 and require login
 Why it matters:
 
 Rotation makes replay of an already-used refresh token detectable while preserving a usable browser session without storing long-lived credentials in JavaScript.
+
+## Parent-Owned Names In A Resource Hierarchy
+
+Question or confusion:
+
+Why does `resources` store `product_id`, and why is its name unique only within that product?
+
+Clarification:
+
+A product has many resources, so the foreign key belongs on the many-side: `resources.product_id -> products.id`. `UNIQUE(product_id, name)` prevents duplicate labels under one product while allowing separate products to both have a resource called `Reports`. The same pattern applies to sub-resources with `UNIQUE(resource_id, name)`.
+
+Why it matters:
+
+This models the real parent-child hierarchy directly and prevents ambiguous permission-management labels without imposing unnecessary global uniqueness.

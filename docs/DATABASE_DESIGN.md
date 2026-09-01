@@ -122,13 +122,9 @@ Candidate fields:
 ```text
 id
 name
-slug
 description
 launch_url
-status
 archived_at
-archived_by_user_id
-created_by_user_id
 created_at
 updated_at
 ```
@@ -138,6 +134,7 @@ Important rules:
 - A product must be created with at least one resource in the MVP.
 - Product creation should be transactional: create the product and its first resource together, or create neither.
 - A product can have many resources after creation.
+- Product names are globally unique in the MVP.
 - Products are archived instead of hard-deleted.
 
 ### `resources`
@@ -150,11 +147,8 @@ Candidate fields:
 id
 product_id
 name
-key
 description
-status
 archived_at
-archived_by_user_id
 created_at
 updated_at
 ```
@@ -162,13 +156,13 @@ updated_at
 Candidate uniqueness:
 
 ```text
-UNIQUE(product_id, key)
+UNIQUE(product_id, name)
 ```
 
 Important rules:
 
 - Each resource belongs to exactly one product.
-- A resource key must be unique within its product.
+- A resource name must be unique within its product.
 - Resource creation after product setup is allowed.
 - Resources are archived instead of hard-deleted.
 
@@ -182,11 +176,8 @@ Candidate fields:
 id
 resource_id
 name
-key
 description
-status
 archived_at
-archived_by_user_id
 created_at
 updated_at
 ```
@@ -194,13 +185,14 @@ updated_at
 Candidate uniqueness:
 
 ```text
-UNIQUE(resource_id, key)
+UNIQUE(resource_id, name)
 ```
 
 Important rules:
 
 - Sub-resources are optional.
 - A resource can exist and be useful without sub-resources.
+- A sub-resource name must be unique within its resource.
 - If a resource has sub-resources, access is assigned on the sub-resources.
 - If a resource has no sub-resources, access is assigned directly on the resource.
 - Sub-resources are archived instead of hard-deleted.

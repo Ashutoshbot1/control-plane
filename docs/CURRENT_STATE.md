@@ -1,6 +1,6 @@
 # Current State
 
-Last updated: 2026-08-25
+Last updated: 2026-09-01
 
 ## Current Phase
 
@@ -45,6 +45,9 @@ Phase 2 — Database foundation.
 - Added a constraint preventing an invitation from being both accepted and revoked.
 - Created and applied the `refresh_tokens` schema migration with selector-plus-hash token storage, expiry and revocation timestamps, and a self-reference for token rotation chains.
 - Added a constraint preventing a refresh token from replacing itself.
+- Created and applied the `products`, `resources`, and `sub_resources` migrations with the product-to-resource-to-sub-resource foreign-key hierarchy.
+- Added global product-name uniqueness and per-parent resource/sub-resource name uniqueness constraints.
+- Added nullable `archived_at` and required creation/update timestamps to each hierarchy table.
 
 ## In Progress
 
@@ -52,7 +55,7 @@ Phase 2 — Database foundation.
 
 ## Next Task
 
-Create the products, resources, and sub-resources schema.
+Create the access-assignment schema for resource and sub-resource leaves.
 
 ## Known Blockers
 
@@ -67,11 +70,11 @@ None blocking backend scaffolding.
 ```text
 Frontend: intentionally empty; no build available
 Backend: `npm run typecheck` passes; `/health` and database-backed `/ready` are available
-Database: local Docker PostgreSQL is configured; users, invitations, and refresh-token migrations are applied and verified, including rollback and re-apply of the refresh-token migration
+Database: local Docker PostgreSQL is configured; users, invitations, refresh-token, and product-hierarchy migrations are applied and verified, including rollback and re-apply of the latest migration
 Tests: not configured yet
 Git: main matches origin; the current authentication-lifecycle documentation changes are uncommitted
 ```
 
 ## Resume Point
 
-When resuming, read `AGENTS.md`, this file, and `ROADMAP.md`. Continue Phase 2 in `backend/` by designing and migrating products, resources, and sub-resources.
+When resuming, read `AGENTS.md`, this file, and `ROADMAP.md`. Continue Phase 2 in `backend/` by designing and migrating resource/sub-resource access assignments.
