@@ -226,6 +226,8 @@ Important rules:
 - `access_level` is one of `VIEW` or `EDIT`.
 - A missing assignment row means no access.
 - Exactly one of `resource_id` or `sub_resource_id` is set.
+- The database enforces the exactly-one-target rule with a `CHECK` constraint and duplicate-grant prevention with two partial unique indexes.
+- `granted_by_user_id` records which authorized user made the grant.
 - If `resource_id` is set, that resource must not have sub-resources.
 - If `sub_resource_id` is set, it belongs to a resource inside a product.
 - Normal user product lists are derived from accessible resources or sub-resources.

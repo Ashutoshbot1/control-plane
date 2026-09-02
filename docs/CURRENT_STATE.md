@@ -48,6 +48,9 @@ Phase 2 — Database foundation.
 - Created and applied the `products`, `resources`, and `sub_resources` migrations with the product-to-resource-to-sub-resource foreign-key hierarchy.
 - Added global product-name uniqueness and per-parent resource/sub-resource name uniqueness constraints.
 - Added nullable `archived_at` and required creation/update timestamps to each hierarchy table.
+- Created and applied the `access_level` enum with `VIEW` and `EDIT` values.
+- Created and applied the `user_access_assignments` schema with a user, an exact resource or sub-resource leaf, grant actor, and timestamps.
+- Added a database `CHECK` constraint requiring exactly one assignment target and partial unique indexes preventing duplicate grants to the same leaf.
 
 ## In Progress
 
@@ -55,7 +58,7 @@ Phase 2 — Database foundation.
 
 ## Next Task
 
-Create the access-assignment schema for resource and sub-resource leaves.
+Create the append-only audit-log schema.
 
 ## Known Blockers
 
@@ -70,11 +73,11 @@ None blocking backend scaffolding.
 ```text
 Frontend: intentionally empty; no build available
 Backend: `npm run typecheck` passes; `/health` and database-backed `/ready` are available
-Database: local Docker PostgreSQL is configured; users, invitations, refresh-token, and product-hierarchy migrations are applied and verified, including rollback and re-apply of the latest migration
+Database: local Docker PostgreSQL is configured; users, invitations, refresh-token, product-hierarchy, and access-assignment migrations are applied and verified, including rollback and re-apply of the latest migration
 Tests: not configured yet
 Git: main matches origin; the current authentication-lifecycle documentation changes are uncommitted
 ```
 
 ## Resume Point
 
-When resuming, read `AGENTS.md`, this file, and `ROADMAP.md`. Continue Phase 2 in `backend/` by designing and migrating resource/sub-resource access assignments.
+When resuming, read `AGENTS.md`, this file, and `ROADMAP.md`. Continue Phase 2 in `backend/` by designing and migrating append-only audit logs.

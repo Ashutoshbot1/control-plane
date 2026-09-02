@@ -136,3 +136,17 @@ A product has many resources, so the foreign key belongs on the many-side: `reso
 Why it matters:
 
 This models the real parent-child hierarchy directly and prevents ambiguous permission-management labels without imposing unnecessary global uniqueness.
+
+## Exactly-One Leaf Assignment
+
+Question or confusion:
+
+How can one assignment table safely target either a resource leaf or a sub-resource leaf without allowing ambiguous rows?
+
+Clarification:
+
+Store nullable `resource_id` and `sub_resource_id`, then enforce an exclusive-or rule with a database `CHECK`: one must be present and the other absent. Two partial unique indexes ensure a user can have only one active row for the same resource leaf or sub-resource leaf. Missing rows represent `NONE`; only `VIEW` and `EDIT` are stored.
+
+Why it matters:
+
+The database prevents invalid or duplicate grants even if a future service/controller has a validation bug.

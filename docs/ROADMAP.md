@@ -39,7 +39,7 @@ An implementation item is marked complete only after relevant verification passe
 - `[x]` Choose and configure a migration workflow
 - `[x]` Create users and roles schema
 - `[x]` Create products, resources, and sub-resources schema
-- `[ ]` Create access-assignment schema
+- `[x]` Create access-assignment schema
 - `[x]` Create refresh-token and invitation schema
 - `[ ]` Create audit-log schema
 - `[ ]` Add development seed data
